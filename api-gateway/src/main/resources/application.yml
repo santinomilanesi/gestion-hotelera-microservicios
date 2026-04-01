@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # --- RUTA PARA AUTENTICACIÓN ---
+        # Se quitó StripPrefix para que coincida con @RequestMapping("/auth") en el micro
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/auth/**
+
+        # --- RUTAS DE NEGOCIO ---
+        - id: usuario-service
+          uri: lb://usuario-service
+          predicates:
+            - Path=/usuario-service/**
+          filters:
+            - StripPrefix=1
+            
+        - id: habitacion-service
+          uri: lb://habitacion-service
+          predicates:
+            - Path=/habitacion-service/**
+          filters:
+            - StripPrefix=1
+            
+        - id: reserva-service
+          uri: lb://reserva-service
+          predicates:
+            - Path=/reserva-service/**
+          filters:
+            - StripPrefix=1
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437"
+
+springdoc:
+  swagger-ui:
+    urls:
+      - name: "Autenticación"
+        url: /auth/v3/api-docs
+      - name: "Usuarios"
+        url: /usuario-service/v3/api-docs
+      - name: "Habitaciones"
+        url: /habitacion-service/v3/api-docs
+      - name: "Reservas"
+        url: /reserva-service/v3/api-docs
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-server:8761/eureka/

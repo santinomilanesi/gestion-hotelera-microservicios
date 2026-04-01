@@ -1,0 +1,21 @@
+# Compilación y paquetes
+**/target/
+**/bin/
+*.jar
+*.war
+
+# IDEs (VS Code, IntelliJ, Eclipse)
+.vscode/
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.factorypath
+
+# Sistema y Log
+*.log
+.DS_Store
+
+# Docker 
+# pgdata/

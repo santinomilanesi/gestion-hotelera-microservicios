@@ -1,0 +1,107 @@
+services:
+  postgres-db:
+    image: postgres:15
+    container_name: postgres-hotel
+    environment:
+      - POSTGRES_USER=user_hotel
+      - POSTGRES_PASSWORD=password_hotel
+      - POSTGRES_DB=auth_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_hotel -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/auth_db
+      - SPRING_DATASOURCE_USERNAME=user_hotel
+      - SPRING_DATASOURCE_PASSWORD=password_hotel
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  usuario-service:
+    build: ./usuario-service
+    container_name: usuario-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/usuarios_db
+      - SPRING_DATASOURCE_USERNAME=user_hotel
+      - SPRING_DATASOURCE_PASSWORD=password_hotel
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  habitacion-service:
+    build: ./habitacion-service
+    container_name: habitacion-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/habitaciones_db
+      - SPRING_DATASOURCE_USERNAME=user_hotel
+      - SPRING_DATASOURCE_PASSWORD=password_hotel
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  reserva-service:
+    build: ./reserva-service
+    container_name: reserva-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+      discovery-server:
+        condition: service_started
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/reservas_db
+      - SPRING_DATASOURCE_USERNAME=user_hotel
+      - SPRING_DATASOURCE_PASSWORD=password_hotel
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+
+  hotel-frontend:
+    build: ./hotel-frontend
+    container_name: hotel-frontend
+    ports:
+      - "3000:3000"  
+    depends_on:
+      - api-gateway
+    environment:
+      - CHOKIDAR_USEPOLLING=true
