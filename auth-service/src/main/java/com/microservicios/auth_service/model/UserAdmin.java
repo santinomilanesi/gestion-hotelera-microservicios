@@ -1,11 +1,6 @@
 package com.microservicios.auth_service.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_admin")
@@ -13,7 +8,7 @@ public class UserAdmin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // Cambiado a Long por estándar
+    private Long id;
 
     @Column(unique = true, nullable = false)
     private String username;
@@ -24,11 +19,8 @@ public class UserAdmin {
     @Column(nullable = false)
     private String password;
 
-    // Constructor vacío (Obligatorio para JPA)
-    public UserAdmin() {
-    }
+    public UserAdmin() {}
 
-    // Constructor completo
     public UserAdmin(Long id, String username, String email, String password) {
         this.id = id;
         this.username = username;

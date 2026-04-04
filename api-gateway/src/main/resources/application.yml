@@ -12,7 +12,6 @@ spring:
           lower-case-service-id: true
       routes:
         # --- RUTA PARA AUTENTICACIÓN ---
-        # Se quitó StripPrefix para que coincida con @RequestMapping("/auth") en el micro
         - id: auth-service
           uri: lb://auth-service
           predicates:
@@ -40,11 +39,12 @@ spring:
           filters:
             - StripPrefix=1
 
+# --- CONFIGURACIÓN DE SEGURIDAD PROFESIONAL ---
+app:
   security:
-    oauth2:
-      resourceserver:
-        jwt:
-          secret-key: "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437"
+    jwt:
+      # Busca la variable de entorno, si no existe en Docker, usa la clave por defecto
+      secret: ${APP_SECURITY_JWT_SECRET:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}
 
 springdoc:
   swagger-ui:

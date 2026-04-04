@@ -5,7 +5,7 @@ spring:
   application:
     name: auth-service
   datasource:
-    url: jdbc:postgresql://postgres-db:5432/hotel_db
+    url: jdbc:postgresql://postgres-db:5432/auth_db
     username: user_hotel
     password: password_hotel
     driver-class-name: org.postgresql.Driver
@@ -18,3 +18,11 @@ eureka:
   client:
     service-url:
       defaultZone: http://discovery-server:8761/eureka/
+
+# --- CONFIGURACIÓN DE SEGURIDAD PROFESIONAL ---
+app:
+  security:
+    jwt:
+      # Sincronizado con el Gateway y listo para recibir variables de entorno
+      secret: ${APP_SECURITY_JWT_SECRET:5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437}
+      expiration: 3600000

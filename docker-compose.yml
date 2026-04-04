@@ -5,11 +5,11 @@ services:
     environment:
       - POSTGRES_USER=user_hotel
       - POSTGRES_PASSWORD=password_hotel
-      - POSTGRES_DB=auth_db
+      - POSTGRES_DB=auth_db 
     ports:
       - "5433:5432"
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql 
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user_hotel -d auth_db"]
       interval: 5s
@@ -31,6 +31,8 @@ services:
       - discovery-server
     environment:
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      # INYECCIÓN PROFESIONAL DE LA CLAVE
+      - APP_SECURITY_JWT_SECRET=5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
 
   auth-service:
     build: ./auth-service
@@ -47,6 +49,8 @@ services:
       - SPRING_DATASOURCE_USERNAME=user_hotel
       - SPRING_DATASOURCE_PASSWORD=password_hotel
       - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-server:8761/eureka/
+      # USAMOS EL MISMO NOMBRE DE VARIABLE QUE EN EL GATEWAY
+      - APP_SECURITY_JWT_SECRET=5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437
 
   usuario-service:
     build: ./usuario-service
