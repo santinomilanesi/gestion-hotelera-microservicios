@@ -1,6 +1,7 @@
 package com.microservicios.reserva_service.exception;
 
-import com.microservicios.reserva_service.dto.ErrorResponse;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -8,16 +9,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.stream.Collectors;
+
+import com.microservicios.reserva_service.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<ErrorResponse> manejarFeign(ResponseStatusException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> manejarStatusException(ResponseStatusException ex, WebRequest request) {
         ErrorResponse error = new ErrorResponse(
                 ex.getStatusCode().value(),
-                "Error en Servicio Externo",
+                "Error de Comunicación",
                 ex.getReason(),
                 request.getDescription(false)
         );
@@ -26,19 +28,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> manejarValidacion(MethodArgumentNotValidException ex, WebRequest request) {
-        String errores = ex.getBindingResult().getFieldErrors().stream()
+        String detalles = ex.getBindingResult().getFieldErrors().stream()
                 .map(e -> e.getField() + ": " + e.getDefaultMessage())
                 .collect(Collectors.joining(" | "));
-        return new ResponseEntity<>(new ErrorResponse(400, "Validación Fallida", errores, request.getDescription(false)), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorResponse(400, "Validación Fallida", detalles, request.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> manejarRuntime(RuntimeException ex, WebRequest request) {
-        return new ResponseEntity<>(new ErrorResponse(400, "Error de Negocio", ex.getMessage(), request.getDescription(false)), HttpStatus.BAD_REQUEST);
+        System.err.println("RUNTIME ERROR: " + ex.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(400, "Error de Lógica/Negocio", ex.getMessage(), request.getDescription(false)), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> manejarGlobal(Exception ex, WebRequest request) {
-        return new ResponseEntity<>(new ErrorResponse(500, "Error Interno", ex.getMessage(), request.getDescription(false)), HttpStatus.INTERNAL_SERVER_ERROR);
+        ex.printStackTrace(); 
+        return new ResponseEntity<>(new ErrorResponse(500, "Error Crítico del Sistema", ex.getMessage(), request.getDescription(false)), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

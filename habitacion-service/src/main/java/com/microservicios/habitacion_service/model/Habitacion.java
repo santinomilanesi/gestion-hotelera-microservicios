@@ -1,5 +1,8 @@
 package com.microservicios.habitacion_service.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,26 +21,21 @@ public class Habitacion {
     private Long id;
 
     @NotBlank(message = "El número de habitación es obligatorio")
+    @Column(unique = true, nullable = false) 
     private String numero; 
 
-    @NotBlank(message = "El tipo (Simple, Doble, Suite) es obligatorio")
-    private String tipo;   
+    @NotBlank(message = "El tipo es obligatorio")
+    private String tipo;    
 
     @NotNull(message = "El precio es obligatorio")
     @Min(value = 0, message = "El precio no puede ser negativo")
     private Double precio;
 
+    @Column(nullable = false)
+    @JsonProperty("disponible") 
     private boolean disponible = true;
 
     public Habitacion() {}
-
-    public Habitacion(Long id, String numero, String tipo, Double precio, boolean disponible) {
-        this.id = id;
-        this.numero = numero;
-        this.tipo = tipo;
-        this.precio = precio;
-        this.disponible = disponible;
-    }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -47,6 +45,8 @@ public class Habitacion {
     public void setTipo(String tipo) { this.tipo = tipo; }
     public Double getPrecio() { return precio; }
     public void setPrecio(Double precio) { this.precio = precio; }
+
+    @JsonProperty("disponible") 
     public boolean isDisponible() { return disponible; }
     public void setDisponible(boolean disponible) { this.disponible = disponible; }
 }

@@ -14,7 +14,7 @@ import com.microservicios.usuario_service.dto.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     
-    // 1. Manejar errores de validación de campos (@Valid) - 400 Bad Request
+    // 1 Manejar errores de validación de campos (@Valid) - 400 Bad Request
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> manejarValidacion(MethodArgumentNotValidException ex, WebRequest request) {
         String errores = ex.getBindingResult().getFieldErrors().stream()
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
-    // 2. Manejar errores cuando no se encuentra un recurso - 404 Not Found
+    // 2 Manejar errores cuando no se encuentra un recurso - 404 Not Found
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> manejarRuntime(RuntimeException ex, WebRequest request) {
         ErrorResponse error = new ErrorResponse(
@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    // 3. Manejar errores generales del servidor - 500 Internal Server Error
+    // 3 Manejar errores generales del servidor - 500 Internal Server Error
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> manejarGlobal(Exception ex, WebRequest request) {
         ErrorResponse error = new ErrorResponse(

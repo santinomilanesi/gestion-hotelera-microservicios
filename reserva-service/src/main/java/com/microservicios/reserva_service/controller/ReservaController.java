@@ -11,9 +11,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/reservas")
 public class ReservaController {
+    
     private final ReservaService service;
 
-    public ReservaController(ReservaService service) { this.service = service; }
+    public ReservaController(ReservaService service) { 
+        this.service = service; 
+    }
 
     @PostMapping
     public ResponseEntity<Reserva> crear(@Valid @RequestBody Reserva r) {
@@ -23,5 +26,11 @@ public class ReservaController {
     @GetMapping
     public ResponseEntity<List<Reserva>> listar() {
         return ResponseEntity.ok(service.listarTodas());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+        service.eliminarReserva(id);
+        return ResponseEntity.noContent().build();
     }
 }

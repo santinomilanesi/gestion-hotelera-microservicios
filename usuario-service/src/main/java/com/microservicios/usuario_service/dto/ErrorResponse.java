@@ -8,12 +8,11 @@ public class ErrorResponse {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
-    private int estado;      // Ejemplo: 404
-    private String error;    // Ejemplo: Not Found
-    private String mensaje;  // Ejemplo: "No se encontró el usuario con ID: 1"
-    private String detalles; // Ejemplo: "uri=/usuarios/1"
+    private int estado;      
+    private String error;    
+    private String mensaje;  
+    private String detalles; 
 
-    // Constructor vacío para Jackson
     public ErrorResponse() {
         this.timestamp = LocalDateTime.now();
     }

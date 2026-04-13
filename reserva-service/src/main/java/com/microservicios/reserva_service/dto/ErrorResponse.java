@@ -1,7 +1,8 @@
 package com.microservicios.reserva_service.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ErrorResponse {
 
@@ -20,7 +21,6 @@ public class ErrorResponse {
         this.detalles = detalles;
     }
 
-    // Getters (Importantes para que Jackson pueda armar el JSON de respuesta)
     public LocalDateTime getTimestamp() {
         return timestamp;
     }

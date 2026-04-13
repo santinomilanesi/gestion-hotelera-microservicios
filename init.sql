@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS user_admin (
     password VARCHAR(255) NOT NULL
 );
 
--- Insertamos el admin con la clave '123456' encriptada (BCrypt)
+-- Insertamos el admin con la clave 123456 encriptada (BCrypt)
 INSERT INTO user_admin (username, email, password) 
 VALUES ('admin', 'admin@hotel.com', '$2a$10$vI8ZWBZ.T6lMvxT.A8r.TuTAnC8QYm9xN2f4S1nC.mC8oYqV6fO1C')
 ON CONFLICT (username) DO NOTHING;

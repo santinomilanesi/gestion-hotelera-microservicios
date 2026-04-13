@@ -39,7 +39,6 @@ spring:
           filters:
             - StripPrefix=1
 
-# --- CONFIGURACIÓN DE SEGURIDAD PROFESIONAL ---
 app:
   security:
     jwt:

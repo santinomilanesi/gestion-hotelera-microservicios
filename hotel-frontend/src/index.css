@@ -1,1 +1,26 @@
 @import "tailwindcss";
+
+:root {
+    --primary: #2563eb;
+    --success: #10b981;
+    --danger: #ef4444;
+    --text-muted: #64748b;
+}
+
+/* Aplicamos a todos los inputs del sistema */
+.form-group {
+    @apply flex flex-col mb-4;
+}
+
+.form-group label {
+    @apply text-[11px] font-black text-slate-400 uppercase mb-1.5 ml-1 tracking-wider;
+}
+
+.form-group input, .form-group select {
+    @apply px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-500 transition-all;
+}
+
+/* Avatar dinámico que pediste */
+.avatar-circle {
+    @apply w-10 h-10 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center font-bold border border-emerald-200;
+}
